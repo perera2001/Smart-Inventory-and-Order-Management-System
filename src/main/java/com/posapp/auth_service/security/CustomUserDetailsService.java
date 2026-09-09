@@ -1,5 +1,6 @@
 package com.posapp.auth_service.security;
 
+import com.posapp.auth_service.config.AdminCredentials;
 import com.posapp.auth_service.entity.User;
 import com.posapp.auth_service.repo.UserRepo;
 import java.util.List;
@@ -20,12 +21,24 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepo.findByEmail(username)
+		String email = username.trim().toLowerCase();
+		if (AdminCredentials.ADMIN_EMAIL.equals(email)) {
+			return new org.springframework.security.core.userdetails.User(
+					AdminCredentials.ADMIN_EMAIL,
+					"{noop}" + AdminCredentials.ADMIN_PASSWORD,
+					List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+		}
+
+		User user = userRepo.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
 		return new org.springframework.security.core.userdetails.User(
 				user.getEmail(),
 				user.getPassword(),
+				user.isEnabled(),
+				true,
+				true,
+				true,
 				List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
 	}
 }

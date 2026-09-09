@@ -1,28 +1,16 @@
 package com.posapp.auth_service.dto.res;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AuthResponseDTO {
 
-	private String token;
+	private String accessToken;
+	private String tokenType;
+	private long expiresIn;
 	private UserResponseDTO user;
-
-	public AuthResponseDTO(String token, UserResponseDTO user) {
-		this.token = token;
-		this.user = user;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public UserResponseDTO getUser() {
-		return user;
-	}
-
-	public void setUser(UserResponseDTO user) {
-		this.user = user;
-	}
 }
